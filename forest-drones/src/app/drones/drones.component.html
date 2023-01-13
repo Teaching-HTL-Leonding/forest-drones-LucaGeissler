@@ -1,0 +1,87 @@
+<h1>Drones</h1>
+
+<h2>My Current Position</h2>
+<div>
+  <p>X:
+  <input placeholder="{{droneApiService.foresterX}}"  [(ngModel)]="inputX">
+  </p>
+</div>
+<div>
+  <p>Y:
+  <input placeholder="{{droneApiService.foresterY}}"  [(ngModel)]="inputY">
+  </p>
+</div>
+<button (click)="UpdatePos()">Set Position</button>
+
+<h2>Drone Overview</h2>
+
+<table>
+  <tr>
+    <td>Id</td>
+    <td>Status</td>
+    <td>Latitude</td>
+    <td>Longitude</td>
+    <td>Fly&Scan</td>
+  </tr>
+  <tr *ngFor="let drone of drones">
+    <td><button (click)="droneSettingsPage(drone.id)">{{drone.id}}</button></td>
+    <td>{{drone.isActive}}</td>
+    <td>{{drone.position?.x}}</td>
+    <td>{{drone.position?.y}}</td>
+    <td>
+      <ng-container *ngIf="drone.isActive">
+        <button (click)="callDroneAndScan(drone.id)">Fly&Scan</button>
+      </ng-container>
+    </td>
+  </tr>
+</table>
+
+<ng-container *ngIf="droneApiService.allKnownScans && droneApiService.foresterX!=null && droneApiService.foresterY!=null">
+  <h2>Closest Tree</h2>
+  <table>
+    <tr>
+      <td>X</td>
+      <td>Y</td>
+      <td>Examine</td>
+      <td>Distance</td>
+    </tr>
+    <tr>
+      <td>{{getClosestTree().x}}</td>
+      <td>{{getClosestTree().y}}</td>
+      <ng-container *ngIf="checkPos(getClosestTree().x,getClosestTree().y)">
+        <td><button (click)="examinedTree(getClosestTree().x,getClosestTree().y)">Examine</button></td>
+      </ng-container>
+      <ng-container *ngIf="!checkPos(getClosestTree().x,getClosestTree().y)">
+        <td>Out of Range</td>
+      </ng-container>
+      <td>{{nearestDist}}</td>
+    </tr>
+  </table>
+</ng-container>
+<ng-container *ngIf="droneApiService.allKnownScans">
+
+  <h2>All known Trees to examine</h2>
+
+  <table>
+    <tr>
+      <td></td>
+      <td>X</td>
+      <td>Y</td>
+      <td>Examine</td>
+    </tr>
+    <tr *ngFor="let tree of droneApiService.allKnownScans.damagedTrees;let i = index">
+      <td>Tree {{i+1}}</td>
+      <td>{{tree.x}}</td>
+      <td>{{tree.y}}</td>
+      <ng-container *ngIf="checkPos(tree.x,tree.y)">
+        <td><button (click)="examinedTree(tree.x,tree.y)">Examine</button></td>
+      </ng-container>
+      <ng-container *ngIf="!checkPos(tree.x,tree.y)">
+        <td>Out of Range</td>
+      </ng-container>
+    </tr>
+  </table>
+</ng-container>
+
+
+

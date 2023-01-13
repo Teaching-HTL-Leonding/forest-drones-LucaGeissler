@@ -1,0 +1,39 @@
+<h1>Drone Settings for Drone number: {{droneId}}</h1>
+
+<ng-container *ngIf="drone">
+  <ng-container *ngIf="drone.isActive">
+    <h1>Drone is currently at X: {{drone.position?.x}} and Y: {{drone.position?.y}}</h1>
+
+    <h2>Drone is active</h2>
+    <button (click)="droneDeactivate(drone.id)">Deactivate Drone</button>
+
+    <ng-container *ngIf="droneApiService.foresterX && droneApiService.foresterY">
+      <h2>Call Drone</h2>
+      <button (click)="callDrone(drone.id)">Call Drone to my current Position</button>
+    </ng-container>
+
+    <h2>Scan</h2>
+    <button (click)="scan(drone.id)">Scan</button>
+
+    <ng-container *ngIf="scanResult">
+      <table>
+        <tr>
+          <td></td>
+          <td>X</td>
+          <td>Y</td>
+        </tr>
+        <tr *ngFor="let tree of scanResult.damagedTrees;let i = index">
+          <td>Tree {{i+1}}</td>
+          <td>{{tree.x}}</td>
+          <td>{{tree.y}}</td>
+        </tr>
+      </table>
+    </ng-container>
+
+  </ng-container>
+  <ng-container *ngIf="!drone.isActive">
+    <h2>Drone is deactivated</h2>
+    <button (click)="droneActivate(drone.id)">Activate Drone</button>
+  </ng-container>
+</ng-container>
+
